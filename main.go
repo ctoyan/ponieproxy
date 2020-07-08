@@ -41,9 +41,8 @@ func main() {
 	}
 
 	if *singleUrl != "" {
-		trimmedUrl := strings.TrimSpace(*singleUrl)
-		reqConds = append(reqConds, goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("%v", trimmedUrl))))
-		respConds = append(respConds, goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("%v", trimmedUrl))))
+		reqConds = append(reqConds, goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("%v", *singleUrl))))
+		respConds = append(respConds, goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("%v", *singleUrl))))
 	}
 
 	proxy.OnRequest(reqConds...).DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {

@@ -4,7 +4,7 @@ VERSION=$1
 OUTPUT_DIR="./release"
 TAG="v${VERSION}"
 USER="ctoyan"
-REPO="waybackcollector"
+REPO="ponieproxy"
 
 if [[ -z "$VERSION" || -z "$OUTPUT_DIR" ]]; then
   echo "usage: $0 <VERSION> <OUTPUT_DIR>"
