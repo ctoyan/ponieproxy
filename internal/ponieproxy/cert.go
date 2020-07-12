@@ -1,4 +1,4 @@
-package main
+package ponieproxy
 
 import (
 	"crypto/tls"
