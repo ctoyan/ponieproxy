@@ -73,7 +73,7 @@ Some-more-headers: here
 {some JSON response here}
 ```
 
-##Applying your own filters
+## Applying your own filters
 Since ponieproxy uses goproxy behind the scenes, you can apply your own request and response filters using the goproxy `OnResponse` and `OnRequest` functions, along with conditions applied to them. Please check the [goproxy docs](https://godoc.org/gopkg.in/elazarl/goproxy.v1)
 
 You can write your own filters when you go to `/internal/filters` and choose to write a request or response filter.
