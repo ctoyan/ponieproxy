@@ -9,7 +9,7 @@ It can also be used to apply the [HUNT Methodology](https://github.com/bugcrowd/
 The tool is written in Go and you can install it using:
 
 ```
-go get -u github.com/ctoyan/ponieproxy
+go get -u github.com/ctoyan/ponieproxy/cmd/ponieproxy
 ```
 
 Or you can [download a binary](https://github.com/ctoyan/ponieproxy/releases).
