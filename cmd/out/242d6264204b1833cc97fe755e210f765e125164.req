@@ -1,0 +1,17 @@
+GET /_sockets/u/25249187/ws?session=eyJ2IjoiVjMiLCJ1IjoyNTI0OTE4NywicyI6NTQ3NjE1NDk1LCJjIjoyNTM1NjE0NTI2LCJ0IjoxNTk1MTA3MjQ5fQ%3D%3D--2aee63922cb5538a0b3e5851fd424535c3ec041c9ffc31de405e2e43f02ba9d3&shared=true HTTP/1.1
+Host: alive.github.com
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.5
+Cache-Control: no-cache
+Connection: keep-alive, Upgrade
+Cookie: _octo=GH1.1.978386746.1584901026; logged_in=yes; _ga=GA1.2.1097147706.1584901028; dotcom_user=ctoyan; tz=Europe%2FSofia; _gid=GA1.2.1056049457.1595085219; _gat=1
+Origin: https://github.com
+Pragma: no-cache
+Sec-Websocket-Extensions: permessage-deflate
+Sec-Websocket-Key: /0lIP6VocXo0Yj2MaCId7g==
+Sec-Websocket-Version: 13
+Upgrade: websocket
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
+
+ 

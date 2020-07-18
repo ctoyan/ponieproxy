@@ -1,0 +1,13 @@
+GET /ctoyan/ponieproxy/blob/master/internal/filters/responses.go HTTP/1.1
+Host: github.com
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.5
+Cache-Control: max-age=0
+Connection: keep-alive
+Cookie: _octo=GH1.1.978386746.1584901026; logged_in=yes; _ga=GA1.2.1097147706.1584901028; _device_id=65232f84d0de1d734da1845f7b70f9ff; user_session=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; __Host-user_session_same_site=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; dotcom_user=ctoyan; _gh_sess=eWnYH4%2FwNzoMkWzz59%2B9YBkyP37yzaUYA7injX6SyWUakOdEipH3ffpiGdrgikdpji3M4dVgB1rd%2BrTM1buHsCVNDxLH0u6GdMrv34YrCMTm6oHNpG4c3U33kyDyRMVHQ6WwvPKxmxMX24DwS7nOGkZv8d2ryoyDg73tGqyNSMLw68kjBybHTgpsMQnwGm1b3T%2Bo3cDqrFFD5tov5zLLIy6ERkLRhJXVZJ5qfFwym85ymTF3VfBUaA4EGEIUAemRn7asQJUgovyA0Iy9deuCG80bm3Hm9xQ2QjSsrSpmSkJgxfSJCy0AdcX8cehF0%2B4ywK8nYjngY6sxHlOY8EZnCFlSuQBbH2pgv%2BoD4rs%2F5nzWuGFacBQ1I0m6gvU12RP8dkENc0tGd8LvmWm%2F9cVNJWNQrj050OheaE0zBYlw6JXTo4OXeczO7DYdOaZE5hJ7Nmphbg8AxJtqFBxON67%2BzLrozWoZJZdj%2F2AuCFBJybtGlC8kYVIRLbQ7OaSk9hTd%2BOC1Wjlqi074Sf%2FybmC6q49i8ofyp3TngPAmmJHGd22bJPBdOA%2BWNQe1GONTrPNVITHn0iz29Shpqj6%2B25%2Bow9qpNDGT%2FYJWIX8jwQ4N3EFgT9Y8x3lbj1rl2%2B5FTbVAD2HHTcdDswG8DU0r0FSzLS89sa3u67tIfIeHlyZxPL%2FAigV%2BTPmSb3jNEAFJsgNy1o9wliWv8r6KRLGCvztPAaKiU%2FNTIBPsYsxJnnpNrF5B5Ekf1KarKDi38lEJX6%2Bn%2BW6bDUrUAZ2ATCq9lptrKekqiC7RHd4mL8TRxcn1L4eUxJRLrKok8EOoCd2LtJUVfktB5EGLtoZLOe6xbGwZpWbd0JVTtw7X90LaQiN2z%2Foa9TtAcIdLRNenoxlMsv5zNXTThI4VifzFFx8B2eZcxPdVCppgCdFEZnKyStAGKTQpk9ib9odsvVV3vKJiYiDAsCMAq18zZhKoLdUazgM8XoMGPp97OnxBVCLCNtOn8yFNkPI6DIZNQSo5uCuoNL%2BO7g6L112Hp0AfGgCdvZPFpNMRU60aziydRD%2B4UFtcgjJ0Q2DlLZeWOYUvg5c%3D--hsddIzyJ%2BjCBgayS--%2F9%2Brq%2FJCbwQalyJQSK1ghA%3D%3D; tz=Europe%2FSofia; _gid=GA1.2.1056049457.1595085219; has_recent_activity=1; _gat=1
+If-None-Match: W/"f162583b8ea88ad0e195e8152b1d5ae5"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
+
+ 

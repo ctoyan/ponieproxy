@@ -1,0 +1,13 @@
+GET /users/ctoyan/feature_preview/indicator_check HTTP/1.1
+Host: github.com
+Accept: application/json
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.5
+Cache-Control: max-age=0
+Connection: keep-alive
+Cookie: _octo=GH1.1.978386746.1584901026; logged_in=yes; _ga=GA1.2.1097147706.1584901028; _device_id=65232f84d0de1d734da1845f7b70f9ff; user_session=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; __Host-user_session_same_site=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; dotcom_user=ctoyan; _gh_sess=7W2dCURbhkSlxpW4ak%2BbCfXjIm9FiWd7nl6zJZp29ny8ec29yZp0AHpZxnfsAkfUbuidCHOY0OPueXV3mQk3cUgphwMhljFoCo5hqRoDfj%2BtobXorTqE2FvyPthtsJBEUj0APWwbVBCqZjf2yrK7rZmR6N1ZdmChzn%2B9Jk7vw6tc2B4PXFyswx74eK6lBmuMb66DkJccyUsEP9ZnLfJH4J4MyifAu8POWG3n4H%2BGcgxKq2lXexU5YXQoldUwaoqWKBm1QUcoeujY0gzvtRYycsOHotnLftx%2FLtCAy0y8sGUe3oXE03aUeEF0Xoyq5p%2BsA90W7pXFzRYjL0ozjXwaSui3EEB8HyYRHdDMQylhR%2BdtGlHDqUtmdDEun%2Fn4hTTkzA3eaaweh%2BDoynjdg0BW5UfgqGrXKwukEdks05o4cCm9MTIcRJZcEsYzedOc%2FEuUKNdKFt2ITD4v%2FqLZC14Mq3WvGCN1GYUmbwrVKwKvK2nrHRvAqgk%2Fr%2FHuGIiSAE70fltV66z41w4QGKK4c4MIKEt%2F66fKGFIlCosUu%2FguK85a1ceChcT4X2%2BrGM8z%2BdLubsj04beORNF6qnNaLljt1oA4wKrnpIPSsirEXCDl3HDWUrlXd7nSKKHm0UUyphPBaoEbkdAYLGXLLFn3lSTBVurs3XLCzFrLMrqw1Fmj3HAmppK7K%2FsiZyKr6wZgA1NzpO1EhdMGmgthBEFKcsVd7%2B9PtFpB7PDTzCreGajER4wnhrrcQseDPR%2FRrQ5mDSuhF2umHNXhazqHKrAohmIeDhfxJBJaKfBaMAWpf5Zg5eeGJgMHm5hor8DKZi66%2F2nUyo%2FLgnXJ2qjVk4n5COa1xJUS%2BzIiD5O0qgzQTNScvYR2omOamIq6LRodhIGPmEpTRC8KSuMC0KqaFemeEL8yvJpwVXgSu5%2F15x3Sw8piolnnIxaVPtCQmFbZXJHDwvR8PuUmy%2B85yffaBqCdxIXyJWXhGxKKqJkOyZdvyCPGEfx%2BssLCkpteaZKtGzIW0XgLT0pPlwF37TnKcLZ7QTROAuUhVS9iq5RirITl6%2FIQPHDF7ui%2FGINpTM1j9ws%3D--Ev%2FPr8gHqJF%2FqVxi--u%2FGzy%2BrWpN%2BstOy69SX7MQ%3D%3D; tz=Europe%2FSofia; _gid=GA1.2.1056049457.1595085219; has_recent_activity=1; _gat=1
+If-None-Match: W/"b086cd16a5d1e1190981cda623503729"
+Referer: https://github.com/ctoyan/ponieproxy/blob/master/internal/filters/responses.go
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
+
+ 

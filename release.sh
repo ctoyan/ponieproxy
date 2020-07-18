@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 VERSION=$1
-OUTPUT_DIR="./releases"
-TAG="${VERSION}"
+OUTPUT_DIR="./release"
+TAG="v${VERSION}"
 USER="ctoyan"
 REPO="ponieproxy"
 
 if [[ -z "$VERSION" || -z "$OUTPUT_DIR" ]]; then
-  echo "usage: $0 <VERSION>"
+  echo "usage: $0 <VERSION> <OUTPUT_DIR>"
   exit 1
 fi
 
@@ -39,7 +39,7 @@ do
         BINARY+='.exe'
     fi
 
-    env GOOS=$GOOS GOARCH=$GOARCH go build -o $OUTPUT_DIR/$BINARY github.com/$USER/$REPO/cmd/$REPO
+    env GOOS=$GOOS GOARCH=$GOARCH go build -o $OUTPUT_DIR/$BINARY github.com/$USER/$REPO
     if [ $? -ne 0 ]; then
         echo 'An error has occurred! Aborting the script execution...'
         exit 1

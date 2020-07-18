@@ -7,30 +7,29 @@ import (
 )
 
 type PonieProxy struct {
-	Filters       *filters.Filters
-	Options       *config.Options
-	ProxyInstance *goproxy.ProxyHttpServer
+	RequestFilters  []filters.RequestFilter
+	ResponseFilters []filters.ResponseFilter
+	Options         *config.Options
+	ProxyInstance   *goproxy.ProxyHttpServer
 }
 
-func Init(options *config.Options) *PonieProxy {
+func Init() *PonieProxy {
 	setCA(caCert, caKey)
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
 	pp := new(PonieProxy)
 	pp.ProxyInstance = proxy
-	pp.Filters = &filters.Filters{}
 
-	pp.Filters.AddRequestFilters(options)
-	pp.Filters.AddResponseFilters(options)
+	return pp
+}
 
-	for _, reqFilter := range pp.Filters.RequestFilters {
+func (pp *PonieProxy) ApplyFilters() {
+	for _, reqFilter := range pp.RequestFilters {
 		pp.ProxyInstance.OnRequest(reqFilter.Conditions...).DoFunc(reqFilter.Handler)
 	}
 
-	for _, respFilter := range pp.Filters.ResponseFilters {
+	for _, respFilter := range pp.ResponseFilters {
 		pp.ProxyInstance.OnResponse(respFilter.Conditions...).DoFunc(respFilter.Handler)
 	}
-
-	return pp
 }

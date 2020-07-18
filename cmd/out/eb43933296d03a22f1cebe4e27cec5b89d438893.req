@@ -1,0 +1,24 @@
+POST /ctoyan/ponieproxy/unstar HTTP/1.1
+Host: github.com
+Accept: application/json
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.5
+Connection: keep-alive
+Content-Length: 398
+Content-Type: multipart/form-data; boundary=---------------------------376751318826578919824089977809
+Cookie: _octo=GH1.1.978386746.1584901026; logged_in=yes; _ga=GA1.2.1097147706.1584901028; _device_id=65232f84d0de1d734da1845f7b70f9ff; user_session=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; __Host-user_session_same_site=Qpa2Ndyo8xiRSWf5tuvS4vzPVG4IJJwdE6h-_QXjfkyeV-Xl; dotcom_user=ctoyan; _gh_sess=CG1dt2bwhTxvo79aEk0InEf5WufoCqIzFXhp%2BP8tVoZx4T%2F%2FVE1rTyLvlzlmyWMBJyYgm5EJfTjJVxh5TKxnsUL7cgCLGj%2BFnUoGv2%2FZwMX1B%2B0WLKg%2FpXc%2FLWhHdluO1tFwshuT30qoP7cEif3bXeX1FFLclv5I7RNYmCC5dwJ23A%2BruRCLs9m0psPRm2zEYwBfnmCt%2BxBom20IuoSPHJ1CaKAKTqCT19%2FEsA%2FTqdD5awUNsB6FfatwyFp6eYTwhz8v0%2Ftm9tl0mFk1Law9EyBFLV2JIn%2Fq9MAxPMBfqm%2FKfS3t%2F0ql5LWlvr4AOQc12nsF0QTqlpp1ryF9xRpLb3kiDFkmVVzbbzTD%2B9aFXxZ%2BvpMAGXojuNttLT4Xhfu4Vj1AzGQJ9UIi95f9cYuoHTw%2BCBzKCc3Fn7VlLjpPTZkq6YHx4GnX2i2km3jJPsIyUnZ5dEf3Wth5E5b5JQKYI21UmyBBfpG4sqXkMJIb%2Bm4hU23Z3bN7aQYFwJiTBayxkWHjDKff0duDFiFtsHaGM%2BCsNypMcZsxzsZyVcfOyC7UJrj6bo0ZdQSGuFyV431r57Spy5jYPlnJSHm9ZP8GgMBuLtlIWJ3N%2BtDADWr2%2F8tNmh%2Brcyz7KRju6ktgtJDPRccNxXlVCmkgsVkFJI6B%2FhEDqvWv9FqdufI%2BCo8a2IiwJo72GyEfxpSb79ZsuwzrBbrmig9Q8KWFBb%2BCsJONAiTgODO7dwBHgdXHMtZgl38YWCQZeDTfZqkWCWkgj6f7wReP4RQ%2F%2BhYlM%2F%2FGD5awllAyzqxk4kfGep%2FPwzFUJiB0bRJX55ddHTFqVG%2BniI7JJDLOJZuPB7KTmvSPxRnnfqp0K16QlAw69SHs%2BCOBRdtB6Tzl2MPgYFqr2D7WqW8qpA5ixtVSecbNrCthQT11rITRQo%2Ffhk43zTOWvxFCZ2SCUe5ln6LPiOhXrJh8eFnDZgxdJOpBi5JrSDpy%2FpqBc%2FV0GKfTv7cbHrdquLg0yBYCVd04w4UhnVJBPmLAgcKBDfgIflW7h3u8PBCR3Ho3Iuc4z1STsQFVKrJgxvflDRlCERjjvc5%2FM6wb75ygoVxc%2Bvfj5w%3D%3D--UjX9okMYLIZTZoXZ--vwIwYHWPVWCsadnLTrlMQg%3D%3D; tz=Europe%2FSofia; _gid=GA1.2.1056049457.1595085219; has_recent_activity=1; _gat=1
+Origin: https://github.com
+Referer: https://github.com/ctoyan/ponieproxy/blob/master/internal/filters/responses.go
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
+X-Requested-With: XMLHttpRequest
+
+ -----------------------------376751318826578919824089977809
+Content-Disposition: form-data; name="authenticity_token"
+
+fDylCHih0VhHAKE3JZKtV2Gyd9fBU/ovCbE/ECt2p19RrnPT7B1zSmyuwDW9v/cAvDP7G+kW56Dth9oErK9acA==
+-----------------------------376751318826578919824089977809
+Content-Disposition: form-data; name="context"
+
+repository
+-----------------------------376751318826578919824089977809--
+

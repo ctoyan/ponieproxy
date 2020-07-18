@@ -1,0 +1,14 @@
+POST /_private/browser/stats HTTP/1.1
+Host: api.github.com
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en;q=0.5
+Connection: keep-alive
+Content-Length: 707
+Content-Type: text/plain;charset=UTF-8
+Cookie: _octo=GH1.1.978386746.1584901026; logged_in=yes; _ga=GA1.2.1097147706.1584901028; dotcom_user=ctoyan; tz=Europe%2FSofia; _gid=GA1.2.1056049457.1595085219; _gat=1
+Origin: https://github.com
+Referer: https://github.com/ctoyan/ponieproxy/blob/master/internal/filters/responses.go
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
+
+ {"stats":[{"hydroEventPayload":"{\"event_type\":\"repository.click\",\"payload\":{\"target\":\"UNSTAR_BUTTON\",\"repository_id\":277157861,\"originating_url\":\"https://github.com/ctoyan/ponieproxy/blob/master/internal/filters/responses.go\",\"user_id\":25249187}}","hydroEventHmac":"681adf71a1e79d6df29a695782ca9fed73205206202b843710805b543311aca3","visitorPayload":"eyJyZWZlcnJlciI6bnVsbCwicmVxdWVzdF9pZCI6IkM2QkM6NkFCNzpBQ0VGODpGOEREODo1RjEzNkQzNyIsInZpc2l0b3JfaWQiOiI0MjAyMTM5MDc4NDk0NzU5ODQyIiwicmVnaW9uX2VkZ2UiOiJhbXMiLCJyZWdpb25fcmVuZGVyIjoiaWFkIn0=","visitorHmac":"bb1c7fa884ebd14587a106a544c00d307ecd64abaff61011e56829839a1f23ea","hydroClientContext":"","timestamp":1595108715830,"loggedIn":true}]}
