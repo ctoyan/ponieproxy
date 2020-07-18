@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/ctoyan/ponieproxy/internal/utils"
+	"github.com/ctoyan/ponieproxy/pkg/utils"
 )
 
 type Options struct {
@@ -14,7 +14,7 @@ type Options struct {
 	OutputDir string
 }
 
-func ParseOptions() *Options {
+func ParseFlags() *Options {
 	o := &Options{}
 
 	flag.StringVar(&o.HostPort, "h", ":8080", "Host and port. Default is :8080.")

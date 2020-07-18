@@ -5,23 +5,41 @@ It uses [goproxy](https://github.com/elazarl/goproxy).
 It's useful for saving the traffic as text files and using it to find various data (like secrets, urls, endpoints), with the help of other bash tools.
 It can also be used to apply the [HUNT Methodology](https://github.com/bugcrowd/HUNT) in a more bash friendly way.
 
-## Install
-The tool is written in Go and you can install it using:
+## Install certificate
+Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser of in your system, in order to be able to intercept TLS traffic.
+
+## Configure browser
+First of all, in order to use ponieproxy, you should set your browser to use ponieproxy as an HTTP proxy.
+
+## Installation and usage if you want to use the DEFAULT FILTERS
+### Install
+If you don't plan to write your own filters, you can just download it and run it like a normal tool.
+
+Since it's written in Go and you can install it using:
 
 ```
-go get -u github.com/ctoyan/ponieproxy/cmd/ponieproxy
+go get -u github.com/ctoyan/ponieproxy/cmd
 ```
 
 Or you can [download a binary](https://github.com/ctoyan/ponieproxy/releases).
 
-### Install certificate
-Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser of in your system, in order to be able to intercept TLS traffic.
+### Usage
+This runs the proxy with default filters:
 
-### Configure browser
-First of all, in order to use ponieproxy, you should set your browser to use ponieproxy as an HTTP proxy.
+`ponieproxy -u ./urls.txt -o ./out`
 
-## Basic Usage
-The usage options are as follows:
+
+## Installation and usage if you want to write CUSTOM FILTERS
+### Install
+You just need to clone this repository.
+
+### Usage
+`cd` into the cloned repo and run:
+```
+go run ./cmd/main.go -o OUTPUT_DIR -u URLS_FILE
+```
+
+## Arguments
 ```
 -o string
     	Path to a folder, which will contain uniquely named files with requests and responses (default "./"). Every request and response have the same hash, but different extensions
@@ -31,53 +49,17 @@ The usage options are as follows:
 
 `Note:` The default filters adds the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
 
-## Basic Example
+## Default Filters
+You can check details in `customFilters/default.go` and these are the default ones currently:
 
-`ponieproxy -u ./urls.txt -o ./out`
+- `WriteReq()` - writes uniquely hashed and unique requests for all matching regexes in urls.txt
+- `WriteResp()` - writes uniquely hashed and unique responses for all matching regexes in urls.txt
 
-Outputs files sha1 summed files in the `./out` directory.
+## Writing your own filters
+Since the ponieproxy is just a small wrapper over goproxy, a filter is a struct that combines a slice of goproxy conditions([Req](https://godoc.org/gopkg.in/elazarl/goproxy.v1#ReqCondition) and [Resp](https://godoc.org/gopkg.in/elazarl/goproxy.v1#RespCondition)) and a goproxy handler([Req](https://godoc.org/gopkg.in/elazarl/goproxy.v1#FuncReqHandler) and [Resp](https://godoc.org/gopkg.in/elazarl/goproxy.v1#FuncRespHandler)). Basically the conditions are applied to that handler and I've called it a filter.
 
-The content of a \*.req file is similar to:
+There are some default filters added by me, which live in the `customFilters/default.go` file.
 
-```
-POST /_private/browser/stats HTTP/1.1
-Host: api.github.com
-Accept: */*
-Accept-Language: en-GB,en;q=0.5
-Content-Length: 6453
-Content-Type: text/plain;charset=UTF-8
-Cookie: redacted
-Origin: https://github.com
-Referer: https://someurl
-User-Agent: some user agent
-Some-more-headers: here
+You can add or remove filters in the two arrays in the `main.go` file - `RequestFilters` and `ResponseFilters`.
 
-{some JSON here}
-```
-
-The content of a \*.res file is similar to:
-
-```
-HTTP/1.1 200 OK
-Content-Length: 0
-Access-Control-Allow-Origin: *
-Access-Control-Expose-Headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset
-Cache-Control: no-cache
-Content-Security-Policy: default-src 'none'
-Content-Type: text/plain
-Referrer-Policy: origin-when-cross-origin, strict-origin-when-cross-origin
-Server: GitHub.com
-Status: 200 OK
-Some-more-headers: here
-
-{some JSON here}
-```
-
-## Applying your own filters
-Since ponieproxy uses goproxy behind the scenes, you can apply your own request and response filters using the goproxy `OnResponse` and `OnRequest` functions, along with conditions applied to them. Please check the [goproxy docs](https://godoc.org/gopkg.in/elazarl/goproxy.v1)
-
-You can write your own filters when you go to `/internal/filters` and choose to write a request or response filter.
-
-Then just use `f.addReqFilter` or `f.addRespFilter` and add the type of filter you want, which consists of Conditions and a Handler. Make sure to always return the requests and responses, so the proxy can forward them.
-
-Take note that instead of just filtering the traffic, you can also modify the requests/responses simply by returning the modified request/response in the request/response filter handler.
+Check out the default filters and you'll see how easy it is to write your own.
