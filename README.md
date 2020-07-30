@@ -63,3 +63,11 @@ There are some default filters added by me, which live in the `customFilters/def
 You can add or remove filters in the two arrays in the `main.go` file - `RequestFilters` and `ResponseFilters`.
 
 Check out the default filters and you'll see how easy it is to write your own.
+
+## Upcoming features/filters
+
+- find [HUNT](https://github.com/bugcrowd/HUNT) params and send slack notifications (IN PROGRESS)
+- add all requests paths to a file
+- reflected parameters detection
+- find and replace in requests
+- YAML configuration for filters
