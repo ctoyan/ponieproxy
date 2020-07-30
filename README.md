@@ -70,4 +70,4 @@ Check out the default filters and you'll see how easy it is to write your own.
 - add all requests paths to a file
 - reflected parameters detection
 - find and replace in requests
-- YAML configuration for filters
+- write filters with YAML, instead of Go
