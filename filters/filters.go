@@ -13,3 +13,9 @@ type ResponseFilter struct {
 	Conditions []goproxy.RespCondition
 	Handler    goproxy.FuncRespHandler
 }
+
+type UserData struct {
+	ReqBody      string
+	ReqDump      string
+	FileChecksum string
+}
