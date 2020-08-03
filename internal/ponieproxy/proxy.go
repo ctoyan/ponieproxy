@@ -1,15 +1,15 @@
 package ponieproxy
 
 import (
+	"github.com/ctoyan/ponieproxy/filters"
 	"github.com/ctoyan/ponieproxy/internal/config"
-	"github.com/ctoyan/ponieproxy/internal/filters"
 	"github.com/elazarl/goproxy"
 )
 
 type PonieProxy struct {
 	RequestFilters  []filters.RequestFilter
 	ResponseFilters []filters.ResponseFilter
-	Options         *config.Options
+	Flags           *config.Flags
 	ProxyInstance   *goproxy.ProxyHttpServer
 }
 

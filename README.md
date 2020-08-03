@@ -11,8 +11,7 @@ Add `ca.crt`, located in the root of this repository, as a trusted certificate e
 ## Configure browser
 First of all, in order to use ponieproxy, you should set your browser to use ponieproxy as an HTTP proxy.
 
-## Installation and usage if you want to use the DEFAULT FILTERS
-### Install
+## Install
 If you don't plan to write your own filters, you can just download it and run it like a normal tool.
 
 Since it's written in Go and you can install it using:
@@ -23,51 +22,41 @@ go get -u github.com/ctoyan/ponieproxy/cmd
 
 Or you can [download a binary](https://github.com/ctoyan/ponieproxy/releases).
 
-### Usage
-This runs the proxy with default filters:
+## Basic Usage
 
-`ponieproxy -u ./urls.txt -o ./out`
+### With default filters
+Create a `urls.txt` file with regex for scoped URLs and run the proxy:
 
+`ponieproxy -u URLS_FILE -o OUTPUT_DIR`
 
-## Installation and usage if you want to write CUSTOM FILTERS
-### Install
-You just need to clone this repository.
+`Note:` The default filters adds the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
 
-### Usage
-`cd` into the cloned repo and run:
+### With custom filters
+Clone this repository. [Write your filters](filters/README.md). Then `cd` into the cloned repo and run:
+
 ```
 go run ./cmd/main.go -o OUTPUT_DIR -u URLS_FILE
 ```
 
 ## Arguments
 ```
--o string
-    	Path to a folder, which will contain uniquely named files with requests and responses (default "./"). Every request and response have the same hash, but different extensions
+-h string
+    	Host and port. (default ":8080")
 -u string
-    	Path to a file, which contains a list of URL regexes to intercept
+    	Path to a file, which contains a list of URL regexes to filter. Requires an existing file. (default "./urls.txt")
+-hem
+    	Exact match for hunt params (case insensitive). (default true)
+-ho
+    	Creates a checksumed file with the .hunt extension. (default true)
+-o string
+    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions. (default "./")
+-sw string
+    	URL to slack webhook. No default
 ```
-
-`Note:` The default filters adds the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
-
-## Default Filters
-You can check details in `customFilters/default.go` and these are the default ones currently:
-
-- `WriteReq()` - writes uniquely hashed and unique requests for all matching regexes in urls.txt
-- `WriteResp()` - writes uniquely hashed and unique responses for all matching regexes in urls.txt
-
-## Writing your own filters
-Since the ponieproxy is just a small wrapper over goproxy, a filter is a struct that combines a slice of goproxy conditions([Req](https://godoc.org/gopkg.in/elazarl/goproxy.v1#ReqCondition) and [Resp](https://godoc.org/gopkg.in/elazarl/goproxy.v1#RespCondition)) and a goproxy handler([Req](https://godoc.org/gopkg.in/elazarl/goproxy.v1#FuncReqHandler) and [Resp](https://godoc.org/gopkg.in/elazarl/goproxy.v1#FuncRespHandler)). Basically the conditions are applied to that handler and I've called it a filter.
-
-There are some default filters added by me, which live in the `customFilters/default.go` file.
-
-You can add or remove filters in the two arrays in the `main.go` file - `RequestFilters` and `ResponseFilters`.
-
-Check out the default filters and you'll see how easy it is to write your own.
 
 ## Upcoming features/filters
 
-- find [HUNT](https://github.com/bugcrowd/HUNT) params and send slack notifications (IN PROGRESS)
-- add all requests paths to a file
+- add all requests paths to a file (IN PROGRESS)
 - reflected parameters detection
 - find and replace in requests
 - write filters with YAML, instead of Go

@@ -4,22 +4,28 @@ import (
 	"flag"
 	"log"
 
-	"github.com/ctoyan/ponieproxy/pkg/utils"
+	"github.com/ctoyan/ponieproxy/internal/utils"
 )
 
-type Options struct {
-	HostPort  string
-	URL       string
-	URLFile   string
-	OutputDir string
+type Flags struct {
+	HostPort       string
+	URL            string
+	URLFile        string
+	OutputDir      string
+	SlackWebHook   string
+	HuntOutputFile bool
+	HuntExactMatch bool
 }
 
-func ParseFlags() *Options {
-	o := &Options{}
+func ParseFlags() *Flags {
+	o := &Flags{}
 
-	flag.StringVar(&o.HostPort, "h", ":8080", "Host and port. Default is :8080.")
-	flag.StringVar(&o.URLFile, "u", "./urls.txt", "Path to a file, which contains a list of URL regexes to filter. Requires an existing file. Default is ./urls.txt")
-	flag.StringVar(&o.OutputDir, "o", "./", "Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions. Default is ./")
+	flag.StringVar(&o.HostPort, "h", ":8080", "Host and port")
+	flag.StringVar(&o.URLFile, "u", "./urls.txt", "Path to a file, which contains a list of URL regexes to filter. Requires an existing file")
+	flag.StringVar(&o.OutputDir, "o", "./", "Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions")
+	flag.StringVar(&o.SlackWebHook, "sw", "", "URL to slack webhook")
+	flag.BoolVar(&o.HuntOutputFile, "ho", true, "Creates a checksumed file with the .hunt extension")
+	flag.BoolVar(&o.HuntExactMatch, "hem", true, "Exact match for hunt params (case insensitive)")
 
 	flag.Parse()
 

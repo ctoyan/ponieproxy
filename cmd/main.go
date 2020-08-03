@@ -4,9 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ctoyan/ponieproxy/customFilters"
+	"github.com/ctoyan/ponieproxy/filters"
 	"github.com/ctoyan/ponieproxy/internal/config"
-	filters "github.com/ctoyan/ponieproxy/internal/filters"
 	"github.com/ctoyan/ponieproxy/internal/ponieproxy"
 )
 
@@ -19,12 +18,14 @@ func main() {
 
 	// Add your request filter functions here
 	pp.RequestFilters = []filters.RequestFilter{
-		customFilters.WriteReq(f),
+		filters.PopulateUserdata(f),
+		filters.WriteReq(f),
+		filters.HUNT(f),
 	}
 
 	// Add your response filter functions here
 	pp.ResponseFilters = []filters.ResponseFilter{
-		customFilters.WriteResp(f),
+		filters.WriteResp(f),
 	}
 
 	// Apply all filters to the proxy
