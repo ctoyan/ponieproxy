@@ -49,6 +49,7 @@ func PopulateUserdata(f *config.Flags) RequestFilter {
 				ReqBody:      string(reqBody),
 				ReqDump:      string(requestDump),
 				FileChecksum: hex.EncodeToString(checksum[:]),
+				Host:         req.URL.Host,
 			}
 
 			req.Body = ioutil.NopCloser(bytes.NewBuffer(reqBody))
@@ -76,7 +77,7 @@ func WriteReq(f *config.Flags) RequestFilter {
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.FileChecksum, ud.ReqBody, f.OutputDir, ud.ReqDump, "req")
+			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, ud.ReqDump, "req")
 
 			return req, nil
 		},
@@ -108,7 +109,7 @@ func WriteResp(f *config.Flags) ResponseFilter {
 			}
 
 			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.FileChecksum, ud.ReqBody, f.OutputDir, string(responseDump), "res")
+			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, string(responseDump), "res")
 
 			return res
 		},

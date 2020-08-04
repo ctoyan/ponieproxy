@@ -24,7 +24,7 @@ func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct
 	}
 
 	if fileMsg.String() != "" && flags.HuntOutputFile {
-		utils.WriteUniqueFile(ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
+		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
 	}
 
 	if slackMsg.String() != "" && flags.SlackWebHook != "" {
@@ -48,7 +48,7 @@ func FindInQueryParams(huntType string, huntParam string, reqQueryParams map[str
 	}
 
 	if fileMsg.String() != "" && flags.HuntOutputFile {
-		utils.WriteUniqueFile(ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
+		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
 	}
 
 	if slackMsg.String() != "" && flags.SlackWebHook != "" {

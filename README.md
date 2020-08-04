@@ -6,7 +6,7 @@ It's useful for saving the traffic as text files and using it to find various da
 It can also be used to apply the [HUNT Methodology](https://github.com/bugcrowd/HUNT) in a more bash friendly way.
 
 ## Install certificate
-Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser of in your system, in order to be able to intercept TLS traffic.
+Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser or in your system, in order to be able to intercept TLS traffic.
 
 ## Configure browser
 First of all, in order to use ponieproxy, you should set your browser to use ponieproxy as an HTTP proxy.

@@ -55,12 +55,13 @@ func CollectJsonKeys(json map[string]interface{}, reqJsonKeys map[string]struct{
  * This means that any request and it's resposne are named with the same hash.
  * This makes it easy to go through and read them, when opened with "vim *"
  */
-func WriteUniqueFile(checksum string, body string, outputDir string, httpDump string, ext string) {
-	if outputDir != "./" {
-		os.MkdirAll(outputDir, os.ModePerm)
-	}
+func WriteUniqueFile(host string, checksum string, body string, outputDir string, httpDump string, ext string) {
+	folderPath := fmt.Sprintf("%v/%v", outputDir, host)
+	filePath := fmt.Sprintf("%v/%v.%v", folderPath, checksum, ext)
 
-	filePath := fmt.Sprintf("%v/%v.%v", outputDir, checksum, ext)
+	if !FileExists(folderPath) {
+		os.MkdirAll(folderPath, os.ModePerm)
+	}
 
 	if !FileExists(filePath) {
 		var constructed string
