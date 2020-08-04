@@ -17,7 +17,7 @@ If you don't plan to write your own filters, you can just download it and run it
 Since it's written in Go and you can install it using:
 
 ```
-go get -u github.com/ctoyan/ponieproxy/cmd
+go get -u github.com/ctoyan/ponieproxy/cmd/ponieproxy
 ```
 
 Or you can [download a binary](https://github.com/ctoyan/ponieproxy/releases).
