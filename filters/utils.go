@@ -17,8 +17,8 @@ func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct
 	var fileMsg strings.Builder
 
 	for jsonKey, _ := range reqJsonKeys {
-		forSlack := fmt.Sprintf("*%v* \nREQUEST JSON PARAM: `%v` \nFILE: `%v` \n", huntType, jsonKey, ud.FileChecksum)
-		forFile := fmt.Sprintf("%v \nREQUEST JSON PARAM: %v \nFILE: %v \n\n", huntType, jsonKey, ud.FileChecksum)
+		forSlack := fmt.Sprintf("*%v* \nREQUEST JSON PARAM: `%v`\nREQ URL: %v \nFILE: `%v` \n", huntType, jsonKey, ud.ReqURL, ud.FileChecksum)
+		forFile := fmt.Sprintf("%v \nREQUEST JSON PARAM: %v\nREQ URL: %v, \nFILE: %v \n\n", huntType, jsonKey, ud.ReqURL, ud.FileChecksum)
 
 		constructMsg(jsonKey, huntParam, forSlack, forFile, &slackMsg, &fileMsg, flags)
 	}
@@ -41,8 +41,8 @@ func FindInQueryParams(huntType string, huntParam string, reqQueryParams map[str
 	var fileMsg strings.Builder
 
 	for queryParam := range reqQueryParams {
-		forSlack := fmt.Sprintf("*%v* \nREQUEST QUERY PARAM: `%v` \nFILE: `%v` \n", huntType, queryParam, ud.FileChecksum)
-		forFile := fmt.Sprintf("%v \nREQUEST QUERY PARAM: %v \nFILE: %v \n\n", huntType, queryParam, ud.FileChecksum)
+		forSlack := fmt.Sprintf("*%v* \nREQUEST QUERY PARAM: `%v`\nREQ URL: %v \nFILE: `%v` \n", huntType, queryParam, ud.ReqURL, ud.FileChecksum)
+		forFile := fmt.Sprintf("%v \nREQUEST QUERY PARAM: %v \nREQ URL: %v \nFILE: %v \n\n", huntType, queryParam, ud.ReqURL, ud.FileChecksum)
 
 		constructMsg(queryParam, huntParam, forSlack, forFile, &slackMsg, &fileMsg, flags)
 	}

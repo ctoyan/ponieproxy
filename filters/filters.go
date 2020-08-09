@@ -19,4 +19,5 @@ type UserData struct {
 	ReqDump      string
 	FileChecksum string
 	Host         string
+	ReqURL       string
 }

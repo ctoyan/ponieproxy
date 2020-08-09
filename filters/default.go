@@ -50,6 +50,7 @@ func PopulateUserdata(f *config.Flags) RequestFilter {
 				ReqDump:      string(requestDump),
 				FileChecksum: hex.EncodeToString(checksum[:]),
 				Host:         req.URL.Host,
+				ReqURL:       req.URL.String(),
 			}
 
 			req.Body = ioutil.NopCloser(bytes.NewBuffer(reqBody))
