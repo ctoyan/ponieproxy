@@ -39,7 +39,7 @@ do
         BINARY+='.exe'
     fi
 
-    env GOOS=$GOOS GOARCH=$GOARCH go build -o $OUTPUT_DIR/$BINARY github.com/$USER/$REPO/cmd
+    env GOOS=$GOOS GOARCH=$GOARCH go build -o $OUTPUT_DIR/$BINARY github.com/$USER/$REPO/cmd/$REPO
     if [ $? -ne 0 ]; then
         echo 'An error has occurred! Aborting the script execution...'
         exit 1
