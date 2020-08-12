@@ -1,6 +1,9 @@
 package ponieproxy
 
 import (
+	"io/ioutil"
+	"log"
+
 	"github.com/ctoyan/ponieproxy/filters"
 	"github.com/ctoyan/ponieproxy/internal/config"
 	"github.com/elazarl/goproxy"
@@ -16,6 +19,9 @@ type PonieProxy struct {
 func Init() *PonieProxy {
 	setCA(caCert, caKey)
 	proxy := goproxy.NewProxyHttpServer()
+	// Disable proxy logs
+	proxy.Logger = log.New(ioutil.Discard, "", log.LstdFlags)
+
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
 	pp := new(PonieProxy)

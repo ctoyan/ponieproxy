@@ -32,13 +32,21 @@ func UnmarshalReqBody(reqBody string) (unmarshaled map[string]interface{}, err e
  */
 func CollectJsonKeys(json map[string]interface{}, reqJsonKeys map[string]struct{}) map[string]struct{} {
 	for k, v := range json {
+		if v == nil {
+			return reqJsonKeys
+		}
 		rt := reflect.TypeOf(v)
 		switch rt.Kind() {
+		// if value is a slice of map[string]interface{} iterate over it again
 		case reflect.Slice:
 			s := reflect.ValueOf(v)
 			for i := 0; i < s.Len(); i++ {
-				CollectJsonKeys(s.Index(i).Interface().(map[string]interface{}), reqJsonKeys)
+				el, ok := s.Index(i).Interface().(map[string]interface{})
+				if ok {
+					CollectJsonKeys(el, reqJsonKeys)
+				}
 			}
+		// if not - all keys of other value types are added
 		default:
 			if _, ok := reqJsonKeys[k]; !ok {
 				reqJsonKeys[k] = struct{}{}
