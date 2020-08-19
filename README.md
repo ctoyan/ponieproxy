@@ -57,6 +57,7 @@ go run ./cmd/main.go -o OUTPUT_DIR -u URLS_FILE
 ## Upcoming features/filters
 
 - add all requests paths to a file (IN PROGRESS)
+- save all JS files
 - reflected parameters detection
 - find and replace in requests
 - write filters with YAML, instead of Go
