@@ -32,10 +32,11 @@ Create a `urls.txt` file with regex for scoped URLs and run the proxy:
 `Note:` The default filters adds the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
 
 ### With custom filters
-Clone/Fork this repository. [Write your filters](filters/README.md). Then `cd` into the cloned repo and run:
+Clone/Fork this repository. [Write your filters](filters/README.md). Then `cd` into the cloned repo in `cmd/ponieproxy` and run:
 
 ```
-go run ./cmd/main.go -o OUTPUT_DIR -u URLS_FILE
+go install
+ponieproxy -o OUTPUT_DIR -u URLS_FILE
 ```
 
 ## Arguments
