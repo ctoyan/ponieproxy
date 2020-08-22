@@ -20,4 +20,5 @@ type UserData struct {
 	FileChecksum string
 	Host         string
 	ReqURL       string
+	SavedUrls    map[[20]byte]string
 }

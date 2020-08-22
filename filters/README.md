@@ -27,3 +27,6 @@ Ponieproxy only looks for matches in request query params (e.g. `?id=123&url=ssr
 If you want an alert in slack, you should pass a slack webhook url to the `sw` option.
 
 Currently the HUNT filter matches params for `IDOR`, `SQL Injection`, `SSRF`, `SSTI`, `LFI/RFI/Path Traversal`, `OSCI`, `Debug and Logic Parameters`, which are taken directly from the HUNT repo.
+
+## Save Request URL Filter
+If you want to save every unique request you make in a file - pass the filename to the `-su` flag. This will append to a file all unique, in-scope URLs, that you've requested.

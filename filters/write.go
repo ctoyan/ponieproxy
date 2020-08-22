@@ -21,14 +21,14 @@ import (
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
 func WriteReq(f *config.Flags) RequestFilter {
-	urlsList, err := utils.ReadLines(f.URLFile)
+	scopeUrls, err := utils.ReadLines(f.ScopeFile)
 	if err != nil {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(urlsList, ")|(")))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			ud := ctx.UserData.(UserData)
@@ -47,14 +47,14 @@ func WriteReq(f *config.Flags) RequestFilter {
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
 func WriteResp(f *config.Flags) ResponseFilter {
-	urlsList, err := utils.ReadLines(f.URLFile)
+	scopeUrls, err := utils.ReadLines(f.ScopeFile)
 	if err != nil {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
 
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(urlsList, ")|(")))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 

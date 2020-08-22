@@ -21,6 +21,7 @@ func main() {
 		filters.PopulateUserdata(f),
 		filters.WriteReq(f),
 		filters.HUNT(f),
+		filters.SaveUrls(f),
 	}
 
 	// Add your response filter functions here

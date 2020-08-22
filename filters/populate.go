@@ -24,14 +24,14 @@ import (
  * It is passed to every request and response.
  */
 func PopulateUserdata(f *config.Flags) RequestFilter {
-	urlsList, err := utils.ReadLines(f.URLFile)
+	scopeUrls, err := utils.ReadLines(f.ScopeFile)
 	if err != nil {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(urlsList, ")|(")))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			reqBody, err := ioutil.ReadAll(req.Body)
