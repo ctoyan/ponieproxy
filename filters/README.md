@@ -7,7 +7,7 @@ Check out the default filters and you'll see how easy it is to write your own.
 
 ## Default Filters
 The idea for those is to provide more basic functionality which most people would want.
-You can check details in `filters/default.go`. Currently the default ones are:
+You can check details in `filters/write.go` and `filters/populate.go`. Currently the default ones are:
 
 - `PopulateUserData()` - populates the ctx.UserData with some userful data, which is send across all captured requests/responses
 - `WriteReq()` - writes uniquely hashed and unique requests for all matching regexes in urls.txt
