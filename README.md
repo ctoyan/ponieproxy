@@ -44,7 +44,7 @@ ponieproxy -o OUTPUT_DIR -u URLS_FILE
 -h string
     	Host and port. (default ":8080")
 -u string
-    	Path to a file, which contains a list of URL regexes to filter. Requires an existing file. (default "./urls.txt")
+    	Path to a file, which contains a list of URL regexes to filter (to intercept all requests, use '.*'). Requires an existing file. (default "./urls.txt")
 -hem
     	Exact match for hunt params (case insensitive). (default true)
 -ho
@@ -57,8 +57,7 @@ ponieproxy -o OUTPUT_DIR -u URLS_FILE
 
 ## Upcoming features/filters
 
-- add all requests paths to a file (IN PROGRESS)
-- save all JS files
+- save all JS files (IN PROGRESS)
 - reflected parameters detection
 - find and replace in requests
 - write filters with YAML, instead of Go
