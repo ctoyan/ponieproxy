@@ -22,6 +22,7 @@ func main() {
 		filters.WriteReq(f),
 		filters.HUNT(f),
 		filters.SaveUrls(f),
+		filters.SaveJs(f),
 	}
 
 	// Add your response filter functions here

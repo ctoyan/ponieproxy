@@ -6,9 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"time"
 )
@@ -162,4 +165,30 @@ func SendSlackNotification(webhookUrl string, msg string) error {
 		return errors.New("Non-ok response returned from Slack")
 	}
 	return nil
+}
+
+/*
+ * Download a file from a url into a folder
+ */
+func DownloadFromURL(url *url.URL, folder string) error {
+	resp, err := http.Get(url.String())
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	fileLocation := fmt.Sprintf("%v%v", folder, url.Path)
+
+	if !FileExists(filepath.Dir(fileLocation)) {
+		os.MkdirAll(filepath.Dir(fileLocation), 0770)
+	}
+
+	out, err := os.Create(fileLocation)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
