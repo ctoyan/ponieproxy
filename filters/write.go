@@ -28,6 +28,7 @@ func WriteReq(f *config.Flags) RequestFilter {
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
+			goproxy.UrlMatches(regexp.MustCompile("^.([^.js])$")), // must not be ending in .js
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
@@ -54,6 +55,7 @@ func WriteResp(f *config.Flags) ResponseFilter {
 
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
+			goproxy.UrlMatches(regexp.MustCompile("^.([^.js])$")), // must not be ending in .js
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
