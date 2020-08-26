@@ -25,11 +25,11 @@ Or you can [download a binary](https://github.com/ctoyan/ponieproxy/releases).
 ## Basic Usage
 
 ### With default filters
-Create a `urls.txt` file with regex for scoped URLs and run the proxy:
+Create a `inscope.txt` file with regex for scoped URLs and run the proxy:
 
 `ponieproxy -u URLS_FILE -o OUTPUT_DIR`
 
-`Note:` The default filters adds the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
+`Note:` The default filters add the regex lines between parens. For example - `(REGEX_ON_LINE_ONE)|(REGEX_ON_LINE_TWO)`
 
 ### With custom filters
 Clone/Fork this repository. [Write your filters](filters/README.md). Then `cd` into the cloned repo in `cmd/ponieproxy` and run:
@@ -41,23 +41,27 @@ ponieproxy -o OUTPUT_DIR -u URLS_FILE
 
 ## Arguments
 ```
--h string
-    	Host and port. (default ":8080")
--u string
-    	Path to a file, which contains a list of URL regexes to filter (to intercept all requests, use '.*'). Requires an existing file. (default "./urls.txt")
--hem
-    	Exact match for hunt params (case insensitive). (default true)
--ho
-    	Creates a checksumed file with the .hunt extension. (default true)
--o string
-    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions. (default "./")
--sw string
-    	URL to slack webhook. No default
+Usage of ponieproxy:
+  -h string
+    	Host and port (default ":8080")
+  -hem
+    	Exact match for hunt params (case insensitive) (default true)
+  -ho
+    	Creates a checksumed file with the .hunt extension (default true)
+  -is string
+    	Path to a file, which contains a list of URL regexes to filter. Requires an existing file (default "./inscope.txt")
+  -o string
+    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions (default "./out")
+  -sj string
+    	Path to a folder, which will contain all unique js files (default "./js")
+  -su string
+    	Path to a file, which will contain all unique, in-scope URLs, that you've requested. (default "./urls.txt")
+  -sw string
+    	URL to slack webhook
 ```
 
 ## Upcoming features/filters
 
-- save all JS files (IN PROGRESS)
+- write filters with YAML, instead of Go (IN PROGRESS)
 - reflected parameters detection
 - find and replace in requests
-- write filters with YAML, instead of Go
