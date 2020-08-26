@@ -3,18 +3,18 @@ Since the ponieproxy is just a small wrapper over [goproxy](https://github.com/e
 
 You can add or remove filters in the two arrays in the `main.go` file - `RequestFilters` and `ResponseFilters`.
 
-Check out the default filters and you'll see how easy it is to write your own.
+By default all filters are added (enabled). If you remove/comment them from `main.go`, they won't be applied.
 
-## Default Filters
+## Basic Filters
 The idea for those is to provide more basic functionality which most people would want.
-You can check details in `filters/write.go` and `filters/populate.go`. Currently the default ones are:
+You can check details in `filters/write.go` and `filters/populate.go`. Currently they are:
 
 - `PopulateUserData()` - populates the ctx.UserData with some userful data, which is send across all captured requests/responses
-- `WriteReq()` - writes uniquely hashed and unique requests for all matching regexes in urls.txt
-- `WriteResp()` - writes uniquely hashed and unique responses for all matching regexes in urls.txt
+- `WriteReq()` - writes uniquely hashed and unique requests for all matching regexes in inscope.txt
+- `WriteResp()` - writes uniquely hashed and unique responses for all matching regexes in inscope.txt
 
 ## HUNT Filter
-Ponieproxy applies filters to ease the use of the [HUNT Methodology](https://github.com/bugcrowd/HUNT).
+Ponieproxy applies a filter to ease the use of the [HUNT Methodology](https://github.com/bugcrowd/HUNT).
 
 A valid question is - **What's the difference with the Burp and ZAP plugins that are already present?**
 
@@ -28,5 +28,8 @@ If you want an alert in slack, you should pass a slack webhook url to the `sw` o
 
 Currently the HUNT filter matches params for `IDOR`, `SQL Injection`, `SSRF`, `SSTI`, `LFI/RFI/Path Traversal`, `OSCI`, `Debug and Logic Parameters`, which are taken directly from the HUNT repo.
 
-## Save Request URL Filter
-If you want to save every unique request you make in a file - pass the filename to the `-su` flag. This will append to a file all unique, in-scope URLs, that you've requested.
+## Filter to Save Request URL
+Appends to a file all unique, in-scope URLs, that you've requested. If you want to name the file, pass the filename to the `-su` flag.
+
+## Filter to Save JS Files
+Saves all `.js` files to their corresponding folder. Default save filder is `./js`. So for example a request for `https://somesite.com/path/to/file.js`, will save the file to `./js/path/to/file.js`
