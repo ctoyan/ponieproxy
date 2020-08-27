@@ -1,9 +1,8 @@
 # ponieproxy
-Simple proxy which captures all requests and responses and saves them in uniquely named files.
+Simple proxy which applies [filters](filters/README.md) (default or custom) to your requests and responses, while you browse a website.
 It uses [goproxy](https://github.com/elazarl/goproxy).
 
-It's useful for saving the traffic as text files and using it to find various data (like secrets, urls, endpoints), with the help of other bash tools.
-It can also be used to apply the [HUNT Methodology](https://github.com/bugcrowd/HUNT) in a more bash friendly way.
+It's useful to collect(saves js files, saves raw requests and resesponses, detects [HUNT](https://github.com/bugcrowd/HUNT) params and notifies you on slack, etc.) and manipulate data, while you browse a website and it does them using the [filters](filters/README.md) mentioned above.
 
 ## Install certificate
 Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser or in your system, in order to be able to intercept TLS traffic.
