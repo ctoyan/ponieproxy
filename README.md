@@ -62,7 +62,7 @@ Usage of ponieproxy:
 ## What's different than Burp or ZAP?
 With ponieproxy you can use the power of Go to write filters and manipulate the requests and responses, however you like. Depends on your skills and creativity. 
 
-The other key difference is the way you use it - it's meant to be ran in the background and do whatever you program/set it to do, save everything in files, so you can analyze them later with other tools.
+The other key difference is the way you use it - it's meant to be ran in the background and do whatever you program/set it to do and save everything in files, so you can analyze them later with other tools.
 
 ## Upcoming features/filters
 
