@@ -5,7 +5,8 @@ It uses [goproxy](https://github.com/elazarl/goproxy).
 It's useful to collect(saves js files, saves raw requests and resesponses, detects [HUNT](https://github.com/bugcrowd/HUNT) params and notifies you on slack, etc.) and manipulate data, while you browse a website and it does them using the [filters](filters/README.md) mentioned above.
 
 ## Install certificate
-Add `ca.crt`, located in the root of this repository, as a trusted certificate either in you browser or in your system, in order to be able to intercept TLS traffic.
+Create your own ca certificate and replace `ca.crt`, located in the root of this repository (or alternatively use the default `ca.crt`).
+Then add it as a trusted certificate either in you browser or in your system, in order to be able to intercept TLS traffic.
 
 ## Configure browser
 First of all, in order to use ponieproxy, you should set your browser to use ponieproxy as an HTTP proxy.
