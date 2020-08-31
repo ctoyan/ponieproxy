@@ -22,12 +22,12 @@ func main() {
 		filters.WriteReq(f),
 		filters.HUNT(f),
 		filters.SaveUrls(f),
-		filters.SaveJs(f),
 	}
 
 	// Add your response filter functions here
 	pp.ResponseFilters = []filters.ResponseFilter{
 		filters.WriteResp(f),
+		filters.SaveJs(f),
 	}
 
 	// Apply all filters to the proxy

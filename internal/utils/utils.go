@@ -3,10 +3,13 @@ package utils
 import (
 	"bufio"
 	"bytes"
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -177,7 +180,18 @@ func DownloadFromURL(url *url.URL, folder string) error {
 	}
 	defer resp.Body.Close()
 
-	fileLocation := fmt.Sprintf("%v%v", folder, url.Path)
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// hash the contents of the file and append them with ?
+	// so we can have all version of the files
+	var hashedQuery string
+	bodyChecksum := sha1.Sum(bodyBytes)
+	hashedQuery = "?" + hex.EncodeToString(bodyChecksum[:])
+
+	fileLocation := fmt.Sprintf("%v%v%v", folder, url.Path, hashedQuery)
 
 	if !FileExists(filepath.Dir(fileLocation)) {
 		os.MkdirAll(filepath.Dir(fileLocation), 0770)
@@ -189,6 +203,6 @@ func DownloadFromURL(url *url.URL, folder string) error {
 	}
 	defer out.Close()
 
-	_, err = io.Copy(out, resp.Body)
+	_, err = io.Copy(out, ioutil.NopCloser(bytes.NewBuffer(bodyBytes)))
 	return err
 }
