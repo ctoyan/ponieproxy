@@ -68,5 +68,6 @@ The other key difference is the way you use it - it's meant to be ran in the bac
 ## Upcoming features/filters
 
 - write filters with YAML, instead of Go (IN PROGRESS)
+- add results to db instead of files
 - reflected parameters detection
 - find and replace in requests
