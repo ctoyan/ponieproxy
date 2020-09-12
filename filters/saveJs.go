@@ -21,20 +21,10 @@ func SaveJs(f *config.Flags) ResponseFilter {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
 
-	// detect js file based on content-type response header
-	hasJSContentType := goproxy.RespConditionFunc(func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
-		contentType := resp.Header.Get("Content-Type")
-		ciContentType := strings.ToLower(contentType)
-
-		return strings.Contains(ciContentType, "javascript") ||
-			strings.Contains(ciContentType, "jscript") ||
-			strings.Contains(ciContentType, "ecmascript")
-	})
-
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
-			hasJSContentType,
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			respContentType(false, "javascript", "jscript", "ecmascript"),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 			go func() {

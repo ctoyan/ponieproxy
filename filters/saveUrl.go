@@ -26,6 +26,7 @@ func SaveUrls(f *config.Flags) RequestFilter {
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			reqFileType(true, ".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			currentUrl := req.URL.String()

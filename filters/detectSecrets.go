@@ -14,14 +14,15 @@ import (
 )
 
 /* Request filter
- * Write it to a uniquely named *.req file, in the output folder
+ * Detects secrets using regexs
  *
  * The only filter condition, wraps every line from your urls file
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func WriteReq(f *config.Flags) RequestFilter {
+func DetectReqSecrets(f *config.Flags) RequestFilter {
 	scopeUrls, err := utils.ReadLines(f.ScopeFile)
+	allSecrets := map[string]struct{}{}
 	if err != nil {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
@@ -29,11 +30,15 @@ func WriteReq(f *config.Flags) RequestFilter {
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
-			reqFileType(true, ".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, ud.ReqDump, "req")
+			requestDump, err := httputil.DumpRequest(req, true)
+			if err != nil {
+				fmt.Printf("error on response dump: %v\n", err)
+			}
+
+			go detectSecrets(&allSecrets, requestDump, ud, f.SavedSecretsDir)
 
 			return req, nil
 		},
@@ -41,21 +46,21 @@ func WriteReq(f *config.Flags) RequestFilter {
 }
 
 /* Response filter
- * Write it to a uniquely named *.res file, in the output folder
+ * Detects secrets using regexs
  *
  * The only filter condition, wraps every line from your urls file
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func WriteResp(f *config.Flags) ResponseFilter {
+func DetectRespSecrets(f *config.Flags) ResponseFilter {
 	scopeUrls, err := utils.ReadLines(f.ScopeFile)
+	allSecrets := map[string]struct{}{}
 	if err != nil {
 		log.Fatalf("error reading lines from file: %v", err)
 	}
 
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
-			respContentType(true, "image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"),
 			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
@@ -64,8 +69,7 @@ func WriteResp(f *config.Flags) ResponseFilter {
 				fmt.Printf("error on response dump: %v\n", err)
 			}
 
-			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, string(responseDump), "res")
+			go detectSecrets(&allSecrets, responseDump, ctx.UserData.(UserData), f.SavedSecretsDir)
 
 			return res
 		},
