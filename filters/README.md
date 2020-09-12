@@ -33,3 +33,6 @@ Appends to a file all unique, in-scope URLs, that you've requested. If you want 
 
 ## Filter to Save JS Files
 Saves all `.js` files to their corresponding folder. Default save filder is `./js`. So for example a request for `https://somesite.com/path/to/file.js`, will save the file to `./js/path/to/file.js`
+
+## Filter to find secrets in requests and responses
+Saves all text for all requests/responses that match [zile's](https://github.com/xyele/zile/blob/master/zile.py#L16) and a slightly tweaked [Linkfinder's](https://github.com/GerbenJavado/LinkFinder/blob/master/linkfinder.py#L29) regexes and saves them in a folder (default folder is `./secrets`).
