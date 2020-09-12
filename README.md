@@ -51,7 +51,7 @@ Usage of ponieproxy:
   -is string
     	Path to a file, which contains a list of URL regexes to filter. Requires an existing file (default "./inscope.txt")
   -o string
-    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions (default "./out")
+    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions (default "./http")
   -sj string
     	Path to a folder, which will contain all unique js files (default "./js")
   -su string
