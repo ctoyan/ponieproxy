@@ -18,7 +18,7 @@ Ponieproxy applies a filter to ease the use of the [HUNT Methodology](https://gi
 
 A valid question is - **What's the difference with the Burp and ZAP plugins that are already present?**
 
-The answer is that you have a bit more control over the type of matching that it does. It always matches params case insensitively. The default matching style is exact (using `==`). 
+The answer is that you have a bit more control over the type of matching that it does. It always matches params case insensitively. The default matching style is exact (using `==`). For example if the filter is searching for `id`, it will match `id`, `Id`, `ID`, but not `userId` etc.
 
 If you set `-hem` to `false`, it will look for a substring within the param. Foe example if the filter is searching for `id`, it will positively match the following `userId`, `identification`, `ID`. With `-hem` set to the default `true`, it will only match `id`, `Id`, etc.
 
