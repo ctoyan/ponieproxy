@@ -2,7 +2,6 @@ package filters
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -18,27 +17,22 @@ import (
  * Following the HUNT Methodology (https://github.com/bugcrowd/HUNT):
  * We're looking for exact or non-exact (case insensitive) matches for keywords
  */
-func HUNT(f *config.Flags) RequestFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
+func HUNT(y *config.YAML) RequestFilter {
+	if !y.Filters.Hunt.Active {
+		return RequestFilter{}
 	}
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			reqFileType(true, y.Filters.Hunt.Config.ExcludeReqFileTypes...),
+			reqFileType(false, y.Filters.Hunt.Config.IncludeReqFileTypes...),
+			reqContentType(true, y.Filters.Hunt.Config.ExcludeReqContentTypes...),
+			reqContentType(false, y.Filters.Hunt.Config.IncludeReqContentTypes...),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-			hunt := map[string][]string{}
-			hunt["IDOR"] = []string{"account", "doc", "edit", "email", "group", "id", "key", "no", "number", "order", "profile", "report", "user"}
-			hunt["SSRF"] = []string{"callback", "continue", "data", "dest", "dir", "domain", "feed", "host", "html", "navigation", "next", "open", "out", "page", "path", "port", "redirect", "reference", "return", "show", "site", "to", "uri", "url", "val", "validate", "view", "window"}
-			hunt["OSCI"] = []string{"cli", "cmd", "daemon", "dir", "download", "execute", "ip", "log", "upload"}
-			hunt["SQLI"] = []string{"column", "delete", "fetch", "field", "filter", "from", "id", "keyword", "name", "number", "order", "params", "process", "query", "report", "results", "role", "row", "search", "sel", "select", "sleep", "sort", "string", "table", "update", "user", "view", "where"}
-			hunt["FIPT"] = []string{"doc", "document", "file", "folder", "path", "pdf", "pg", "php_path", "root", "style", "template"}
-			hunt["SSTI"] = []string{"activity", "content", "id", "name", "preview", "redirect", "template", "view"}
-			hunt["LOGIC"] = []string{"access", "adm", "admin", "alter", "cfg", "clone", "config", "create", "dbg", "debug", "delete", "disable", "edit", "enable", "exec", "execute", "grant", "load", "make", "modify", "rename", "reset", "root", "shell", "test", "toggle"}
-			hunt["RCE"] = []string{"cmd", "exec", "command", "execute", "ping", "query", "jump", "code", "reg", "do", "func", "arg", "option", "load", "process", "step", "read", "function", "req", "feature", "exe", "module", "payload", "run", "print"}
-
+			hunt := y.Filters.Hunt.MatchingParams
 			ud := ctx.UserData.(UserData)
 
 			// Get all keys from JSON
@@ -55,11 +49,11 @@ func HUNT(f *config.Flags) RequestFilter {
 			for huntKey, huntParams := range hunt {
 				for _, param := range huntParams {
 					if reqQueryParams != nil {
-						go FindInQueryParams(huntKey, param, reqQueryParams, f, ud)
+						go FindInQueryParams(huntKey, param, reqQueryParams, y, ud)
 					}
 
 					if reqJsonKeys != nil {
-						go FindInJson(huntKey, param, reqJsonKeys, f, ud)
+						go FindInJson(huntKey, param, reqJsonKeys, y, ud)
 					}
 					// handle non json requests (other mime types)
 					// maybe search with string.contains all others?

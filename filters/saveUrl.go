@@ -3,7 +3,6 @@ package filters
 import (
 	"crypto/sha1"
 	"fmt"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -16,24 +15,30 @@ import (
 /* Request filter
  * Save every in scope url to a file containing a list of URLs
  */
-func SaveUrls(f *config.Flags) RequestFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	savedUrls := map[[20]byte]struct{}{}
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
+func SaveUrls(y *config.YAML) RequestFilter {
+	if !y.Filters.Urls.Active {
+		return RequestFilter{}
 	}
+
+	savedUrls := map[[20]byte]struct{}{}
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
-			reqFileType(true, ".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			reqFileType(true, y.Filters.Urls.Config.ExcludeReqFileTypes...),
+			reqFileType(false, y.Filters.Urls.Config.IncludeReqFileTypes...),
+			reqContentType(true, y.Filters.Urls.Config.ExcludeReqContentTypes...),
+			reqContentType(false, y.Filters.Urls.Config.IncludeReqContentTypes...),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			currentUrl := req.URL.String()
 			checksum := sha1.Sum([]byte(currentUrl))
 
 			if _, ok := savedUrls[checksum]; !ok {
-				go utils.AppendToFile(currentUrl, f.SavedUrlsFile)
+				outputFile := fmt.Sprintf("%v/%v", y.Settings.BaseOutputDir, y.Filters.Urls.OutputFile)
+				fmt.Println(currentUrl)
+				go utils.AppendToFile(currentUrl, outputFile)
 				savedUrls[checksum] = struct{}{}
 			}
 

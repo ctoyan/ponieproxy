@@ -6,14 +6,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"regexp"
 	"strings"
 
 	"github.com/ctoyan/ponieproxy/internal/config"
-	"github.com/ctoyan/ponieproxy/internal/utils"
 	"github.com/elazarl/goproxy"
 )
 
@@ -23,15 +21,11 @@ import (
  * UserData is a part of the proxy context.
  * It is passed to every request and response.
  */
-func PopulateUserdata(f *config.Flags) RequestFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
-	}
-
+func PopulateUserdata(y *config.YAML) RequestFilter {
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			reqBody, err := ioutil.ReadAll(req.Body)

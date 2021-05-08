@@ -2,42 +2,96 @@ package config
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 
 	"github.com/ctoyan/ponieproxy/internal/utils"
+	"gopkg.in/yaml.v2"
 )
 
-type Flags struct {
-	HostPort        string
-	URL             string
-	ScopeFile       string
-	OutputDir       string
-	JsOutputDir     string
-	SavedUrlsFile   string
-	SavedSecretsDir string
-	SlackWebHook    string
-	HuntOutputFile  bool
-	HuntExactMatch  bool
+type Config struct {
+	ExcludeReqContentTypes  []string `yaml:"excludeReqContentTypes"`
+	IncludeReqContentTypes  []string `yaml:"includeReqContentTypes"`
+	ExcludeRespContentTypes []string `yaml:"excludeRespContentTypes"`
+	IncludeRespContentTypes []string `yaml:"includeRespContentTypes"`
+
+	ExcludeReqFileTypes  []string `yaml:"excludeReqFileTypes"`
+	IncludeReqFileTypes  []string `yaml:"includeReqFileTypes"`
+	ExcludeRespFileTypes []string `yaml:"excludeRespFileTypes"`
+	IncludeRespFileTypes []string `yaml:"includeRespFileTypes"`
 }
 
-func ParseFlags() *Flags {
-	o := &Flags{}
-
-	flag.StringVar(&o.HostPort, "h", ":8080", "Host and port")
-	flag.StringVar(&o.ScopeFile, "is", "./inscope.txt", "Path to a file, which contains a list of URL regexes to filter. Requires an existing file")
-	flag.StringVar(&o.OutputDir, "o", "./http", "Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions")
-	flag.StringVar(&o.JsOutputDir, "sj", "./js", "Path to a folder, which will contain all unique js files")
-	flag.StringVar(&o.SavedUrlsFile, "su", "./requrls.txt", "Path to a file, which will contain all unique, in-scope URLs, that you've requested")
-	flag.StringVar(&o.SavedSecretsDir, "ss", "./secrets", "Path to a folder, which will contain allfound secrets")
-	flag.StringVar(&o.SlackWebHook, "sw", "", "URL to slack webhook")
-	flag.BoolVar(&o.HuntOutputFile, "ho", true, "Creates a checksumed file with the .hunt extension")
-	flag.BoolVar(&o.HuntExactMatch, "hem", true, "Exact match for hunt params (case insensitive)")
-
-	flag.Parse()
-
-	if !utils.FileExists(o.ScopeFile) {
-		log.Fatalf("File %v doesn't exist", o.ScopeFile)
+type YAML struct {
+	Host    string `yaml:"host"`
+	Port    string `yaml:"port"`
+	Storage struct {
+		Type string `yaml:"type"`
+		DB   struct {
+			Host string `yaml:"host"`
+			User string `yaml:"user"`
+			Pass string `yaml:"pass"`
+		}
+	}
+	Settings struct {
+		BaseOutputDir string   `yaml:"baseOutputDir"`
+		InScope       []string `yaml:"inScope"`
+		OutScope      []string `yaml:"outScope"`
+		SlackHook     string   `yaml:"slackHook"`
 	}
 
-	return o
+	Filters struct {
+		Write struct {
+			Active     bool   `yaml:"active"`
+			ExactMatch bool   `yaml:"exactMatch"`
+			Config     Config `yaml:"config"`
+		}
+
+		Hunt struct {
+			Active         bool                `yaml:"active"`
+			Config         Config              `yaml:"config"`
+			ExactMatch     bool                `yaml:"exactMatch"`
+			MatchingParams map[string][]string `yaml:"matchingParams"`
+		}
+
+		Urls struct {
+			Active     bool   `yaml:"active"`
+			OutputFile string `yaml:"outputFile"`
+			Config     Config `yaml:"config"`
+		}
+
+		Secrets struct {
+			Active    bool   `yaml:"active"`
+			OutputDir string `yaml:"outputDir"`
+			Config    Config `yaml:"config"`
+		}
+
+		Js struct {
+			Active    bool   `yaml:"active"`
+			OutputDir string `yaml:"outputDir"`
+			Config    Config `yaml:"config"`
+		}
+	}
+}
+
+func ParseYAML() *YAML {
+	var configFile string
+	flag.StringVar(&configFile, "c", "./config.yml", "Config file path (e.g. ./config.yml)")
+	flag.Parse()
+
+	if !utils.FileExists(configFile) {
+		log.Fatalf("File %v doesn't exist", configFile)
+	}
+
+	yamlFile, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		log.Fatalf("error reading config.yml: %v ", err)
+	}
+
+	yConf := &YAML{}
+	err = yaml.Unmarshal(yamlFile, yConf)
+	if err != nil {
+		log.Fatalf("error unmarshaling config.yml: %v", err)
+	}
+
+	return yConf
 }

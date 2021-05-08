@@ -16,7 +16,7 @@ import (
  * Searches for a string in the JSON request body
  * Sends a slack notification
  */
-func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct{}, flags *config.Flags, ud UserData) {
+func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct{}, y *config.YAML, ud UserData) {
 	var slackMsg strings.Builder
 	var fileMsg strings.Builder
 
@@ -24,15 +24,15 @@ func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct
 		forSlack := fmt.Sprintf("*%v* \nREQUEST JSON PARAM: `%v`\nREQ URL: %v \nFILE: `%v` \n", huntType, jsonKey, ud.ReqURL, ud.FileChecksum)
 		forFile := fmt.Sprintf("%v \nREQUEST JSON PARAM: %v\nREQ URL: %v, \nFILE: %v \n\n", huntType, jsonKey, ud.ReqURL, ud.FileChecksum)
 
-		constructMsg(jsonKey, huntParam, forSlack, forFile, &slackMsg, &fileMsg, flags)
+		constructMsg(jsonKey, huntParam, forSlack, forFile, &slackMsg, &fileMsg, y)
 	}
 
-	if fileMsg.String() != "" && flags.HuntOutputFile {
-		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
+	if fileMsg.String() != "" && y.Storage.Type == "files" {
+		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", y.Settings.BaseOutputDir, fileMsg.String(), ".hunt")
 	}
 
-	if slackMsg.String() != "" && flags.SlackWebHook != "" {
-		utils.SendSlackNotification(flags.SlackWebHook, slackMsg.String())
+	if slackMsg.String() != "" && y.Settings.SlackHook != "" {
+		utils.SendSlackNotification(y.Settings.SlackHook, slackMsg.String())
 	}
 }
 
@@ -40,7 +40,7 @@ func FindInJson(huntType string, huntParam string, reqJsonKeys map[string]struct
  * Searches for a string in request query param
  * Sends a slack notification
  */
-func FindInQueryParams(huntType string, huntParam string, reqQueryParams map[string][]string, flags *config.Flags, ud UserData) {
+func FindInQueryParams(huntType string, huntParam string, reqQueryParams map[string][]string, y *config.YAML, ud UserData) {
 	var slackMsg strings.Builder
 	var fileMsg strings.Builder
 
@@ -48,38 +48,38 @@ func FindInQueryParams(huntType string, huntParam string, reqQueryParams map[str
 		forSlack := fmt.Sprintf("*%v* \nREQUEST QUERY PARAM: `%v`\nREQ URL: %v \nFILE: `%v` \n", huntType, queryParam, ud.ReqURL, ud.FileChecksum)
 		forFile := fmt.Sprintf("%v \nREQUEST QUERY PARAM: %v \nREQ URL: %v \nFILE: %v \n\n", huntType, queryParam, ud.ReqURL, ud.FileChecksum)
 
-		constructMsg(queryParam, huntParam, forSlack, forFile, &slackMsg, &fileMsg, flags)
+		constructMsg(queryParam, huntParam, forSlack, forFile, &slackMsg, &fileMsg, y)
 	}
 
-	if fileMsg.String() != "" && flags.HuntOutputFile {
-		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", flags.OutputDir, fileMsg.String(), "hunt")
+	if fileMsg.String() != "" && y.Storage.Type == "files" {
+		utils.WriteUniqueFile(ud.Host, ud.FileChecksum, "", y.Settings.BaseOutputDir, fileMsg.String(), ".hunt")
 	}
 
-	if slackMsg.String() != "" && flags.SlackWebHook != "" {
-		utils.SendSlackNotification(flags.SlackWebHook, slackMsg.String())
+	if slackMsg.String() != "" && y.Settings.SlackHook != "" {
+		utils.SendSlackNotification(y.Settings.SlackHook, slackMsg.String())
 	}
 }
 
 /*
  * Construct messages for slack and for the files based on user defined conditions
  */
-func constructMsg(reqParam string, huntParam string, forSlack string, forFile string, slackMsg *strings.Builder, fileMsg *strings.Builder, flags *config.Flags) {
-	if flags.HuntExactMatch && strings.ToLower(reqParam) == strings.ToLower(huntParam) {
-		if flags.HuntOutputFile {
+func constructMsg(reqParam string, huntParam string, forSlack string, forFile string, slackMsg *strings.Builder, fileMsg *strings.Builder, y *config.YAML) {
+	if y.Filters.Hunt.ExactMatch && strings.ToLower(reqParam) == strings.ToLower(huntParam) {
+		if y.Storage.Type == "files" {
 			fileMsg.WriteString(forFile)
 		}
 
-		if flags.SlackWebHook != "" {
+		if y.Settings.SlackHook != "" {
 			slackMsg.WriteString(forSlack)
 		}
 	}
 
-	if !flags.HuntExactMatch && strings.Contains(strings.ToLower(reqParam), strings.ToLower(huntParam)) {
-		if flags.HuntOutputFile {
+	if !y.Filters.Hunt.ExactMatch && strings.Contains(strings.ToLower(reqParam), strings.ToLower(huntParam)) {
+		if y.Storage.Type == "files" {
 			fileMsg.WriteString(forFile)
 		}
 
-		if flags.SlackWebHook != "" {
+		if y.Settings.SlackHook != "" {
 			slackMsg.WriteString(forSlack)
 		}
 	}
@@ -153,8 +153,12 @@ func detectSecrets(allSecrets *map[string]struct{}, dump []byte, ud UserData, sa
  * Block or allow responses which contain one of the passed file types.
  * If 'shouldBlock' param is false, it will allow all given file types.
  */
-func respFileType(shouldBlock bool, fileTypes ...string) goproxy.RespCondition {
-	return goproxy.RespConditionFunc(func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
+func respFileType(shouldBlock bool, fileTypes ...string) goproxy.RespConditionFunc {
+	return func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
+		if fileTypes == nil {
+			return true
+		}
+
 		url := resp.Request.URL.Path
 		for _, ft := range fileTypes {
 			if strings.Contains(strings.ToLower(url), ft) {
@@ -163,15 +167,19 @@ func respFileType(shouldBlock bool, fileTypes ...string) goproxy.RespCondition {
 		}
 
 		return shouldBlock
-	})
+	}
 }
 
 /**
  * Block or allow requests which contain one of the passed file types.
  * If 'shouldBlock' param is false, it will allow all given file types.
  */
-func reqFileType(shouldBlock bool, fileTypes ...string) goproxy.ReqCondition {
-	return goproxy.ReqConditionFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) bool {
+func reqFileType(shouldBlock bool, fileTypes ...string) goproxy.ReqConditionFunc {
+	return func(req *http.Request, ctx *goproxy.ProxyCtx) bool {
+		if fileTypes == nil {
+			return true
+		}
+
 		url := req.URL.Path
 		for _, ft := range fileTypes {
 			if strings.Contains(strings.ToLower(url), ft) {
@@ -180,15 +188,19 @@ func reqFileType(shouldBlock bool, fileTypes ...string) goproxy.ReqCondition {
 		}
 
 		return shouldBlock
-	})
+	}
 }
 
 /**
  * Block or allow responses which contain one of the passed content types.
  * If 'shouldBlock' param is false, it will apply a allow filter for the given file types.
  */
-func respContentType(shouldBlock bool, contentTypes ...string) goproxy.RespCondition {
-	return goproxy.RespConditionFunc(func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
+func respContentType(shouldBlock bool, contentTypes ...string) goproxy.RespConditionFunc {
+	return func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
+		if contentTypes == nil {
+			return true
+		}
+
 		contentType := resp.Header.Get("Content-Type")
 		for _, ct := range contentTypes {
 			if strings.Contains(strings.ToLower(contentType), ct) {
@@ -197,15 +209,19 @@ func respContentType(shouldBlock bool, contentTypes ...string) goproxy.RespCondi
 		}
 
 		return shouldBlock
-	})
+	}
 }
 
 /**
  * Block or allow requests which contain one of the passed content types.
  * If 'shouldBlock' param is false, it will apply a allow filter for the given file types.
  */
-func reqContentType(shouldBlock bool, contentTypes ...string) goproxy.ReqCondition {
-	return goproxy.ReqConditionFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) bool {
+func reqContentType(shouldBlock bool, contentTypes ...string) goproxy.ReqConditionFunc {
+	return func(req *http.Request, ctx *goproxy.ProxyCtx) bool {
+		if contentTypes == nil {
+			return true
+		}
+
 		contentType := req.Header.Get("Content-Type")
 		for _, ct := range contentTypes {
 			if strings.Contains(strings.ToLower(contentType), ct) {
@@ -214,5 +230,39 @@ func reqContentType(shouldBlock bool, contentTypes ...string) goproxy.ReqConditi
 		}
 
 		return shouldBlock
-	})
+	}
 }
+
+// /**
+//  * For all responses - Include all regexes from inScope param, from config.
+//  */
+// func includeInRespScope(inScopeRegexes []string) goproxy.RespCondition {
+// 	return goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(inScopeRegexes, ")|("))))
+// }
+
+// /**
+//  * For all responses - Exclude all regexes from outScope param, from config.
+//  */
+// func excludeFromRespScope(outScopeRegexes []string) goproxy.RespConditionFunc {
+// 	out := regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(outScopeRegexes, ")|(")))
+// 	return func(resp *http.Response, ctx *goproxy.ProxyCtx) bool {
+// 		return !(out.MatchString(resp.Request.URL.Path) || out.MatchString(resp.Request.URL.Host+resp.Request.URL.Path))
+// 	}
+// }
+
+// /**
+//  * For all requrests - Include all regexes from inScope param, from config.
+//  */
+// func includeInReqScope(inScopeRegexes []string) goproxy.ReqCondition {
+// 	return goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(inScopeRegexes, ")|("))))
+// }
+
+// /**
+//  * For all requests - Exclude all regexes from outScope param, from config.
+//  */
+// func excludeFromReqScope(outScopeRegexes []string) goproxy.ReqConditionFunc {
+// 	out := regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(outScopeRegexes, ")|(")))
+// 	return func(req *http.Request, ctx *goproxy.ProxyCtx) bool {
+// 		return !(out.MatchString(req.URL.Path) || out.MatchString(req.URL.Host+req.URL.Path))
+// 	}
+// }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -10,31 +11,29 @@ import (
 )
 
 func main() {
-	// Get your flags
-	f := config.ParseFlags()
+	y := config.ParseYAML()
 
-	// Return an instance of the ponieproxy
 	pp := ponieproxy.Init()
 
 	// Add your request filter functions here
 	pp.RequestFilters = []filters.RequestFilter{
-		filters.PopulateUserdata(f),
-		filters.WriteReq(f),
-		filters.HUNT(f),
-		filters.SaveUrls(f),
-		filters.DetectReqSecrets(f),
+		filters.PopulateUserdata(y),
+		filters.WriteReq(y),
+		filters.HUNT(y),
+		filters.SaveUrls(y),
+		filters.DetectReqSecrets(y),
 	}
 
 	// Add your response filter functions here
 	pp.ResponseFilters = []filters.ResponseFilter{
-		filters.WriteResp(f),
-		filters.SaveJs(f),
-		filters.DetectRespSecrets(f),
+		filters.WriteResp(y),
+		filters.SaveJs(y),
+		filters.DetectRespSecrets(y),
 	}
 
 	// Apply all filters to the proxy
 	pp.ApplyFilters()
 
 	// Start the proxy
-	log.Fatal(http.ListenAndServe(f.HostPort, pp.ProxyInstance))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", y.Host, y.Port), pp.ProxyInstance))
 }

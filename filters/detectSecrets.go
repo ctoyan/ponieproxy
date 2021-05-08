@@ -2,14 +2,12 @@ package filters
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"regexp"
 	"strings"
 
 	"github.com/ctoyan/ponieproxy/internal/config"
-	"github.com/ctoyan/ponieproxy/internal/utils"
 	"github.com/elazarl/goproxy"
 )
 
@@ -20,16 +18,21 @@ import (
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func DetectReqSecrets(f *config.Flags) RequestFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	allSecrets := map[string]struct{}{}
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
+func DetectReqSecrets(y *config.YAML) RequestFilter {
+	if !y.Filters.Secrets.Active {
+		return RequestFilter{}
 	}
+
+	allSecrets := map[string]struct{}{}
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			reqFileType(true, y.Filters.Secrets.Config.ExcludeReqFileTypes...),
+			reqFileType(false, y.Filters.Secrets.Config.IncludeReqFileTypes...),
+			reqContentType(true, y.Filters.Secrets.Config.ExcludeReqContentTypes...),
+			reqContentType(false, y.Filters.Secrets.Config.IncludeReqContentTypes...),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			ud := ctx.UserData.(UserData)
@@ -38,7 +41,8 @@ func DetectReqSecrets(f *config.Flags) RequestFilter {
 				fmt.Printf("error on response dump: %v\n", err)
 			}
 
-			go detectSecrets(&allSecrets, requestDump, ud, f.SavedSecretsDir)
+			outputDir := fmt.Sprintf("%v/%v", y.Settings.BaseOutputDir, y.Filters.Secrets.OutputDir)
+			go detectSecrets(&allSecrets, requestDump, ud, outputDir)
 
 			return req, nil
 		},
@@ -52,16 +56,21 @@ func DetectReqSecrets(f *config.Flags) RequestFilter {
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func DetectRespSecrets(f *config.Flags) ResponseFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	allSecrets := map[string]struct{}{}
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
+func DetectRespSecrets(y *config.YAML) ResponseFilter {
+	if !y.Filters.Secrets.Active {
+		return ResponseFilter{}
 	}
+
+	allSecrets := map[string]struct{}{}
 
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			respFileType(true, y.Filters.Secrets.Config.ExcludeRespFileTypes...),
+			respFileType(false, y.Filters.Secrets.Config.IncludeRespFileTypes...),
+			respContentType(true, y.Filters.Secrets.Config.ExcludeRespContentTypes...),
+			respContentType(true, y.Filters.Secrets.Config.IncludeRespContentTypes...),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 			responseDump, err := httputil.DumpResponse(res, true)
@@ -69,7 +78,8 @@ func DetectRespSecrets(f *config.Flags) ResponseFilter {
 				fmt.Printf("error on response dump: %v\n", err)
 			}
 
-			go detectSecrets(&allSecrets, responseDump, ctx.UserData.(UserData), f.SavedSecretsDir)
+			outputDir := fmt.Sprintf("%v/%v", y.Settings.BaseOutputDir, y.Filters.Secrets.OutputDir)
+			go detectSecrets(&allSecrets, responseDump, ctx.UserData.(UserData), outputDir)
 
 			return res
 		},

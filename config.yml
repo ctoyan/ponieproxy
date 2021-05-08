@@ -1,0 +1,73 @@
+# This is an example config.yaml that you can fill and put whereever you like
+host: "" # same as 0.0.0.0
+port: "8080"
+
+# type and details of storage
+storage:
+  # the only storage type for now is "files". Later we'll have a type "db".
+  type: "files"
+
+settings:
+  # absolute path to output directory
+  baseOutputDir: "/Users/kirov/it/bugbounty/targets/medium.com/"
+  inScope:
+    - "inscope.com"
+    - "medium.com"
+  outScope:
+    - "cdn-images-1.medium.com"
+    - "outofscope.com"
+    - "miro.medium.com"
+  slackHook: ""
+
+# NOTE: Currently only file storage is available. DB support will be added later.
+# This means that all the saved data will be within files.
+filters:
+  # The write filter, writes request and responses in {settings.baseOutputDir}/{hostname}/{filehash}.{type}
+  # For example {/home/someuser/targets/sometarget/sometarget.com/ba5a23c0546d5062812752a9c19ac9e37a803b32.req}
+  # The file types are "req", "res".
+  # The name of the written file is the same request/response pair.
+  write:
+    active: true
+    config:
+      excludeReqFileTypes: [".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"]
+      excludeRespFileTypes: [".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"]
+      excludeRespContentTypes: ["image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"]
+      excludeReqContentTypes: ["image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"]
+
+  # Writes to the same location as the "write" filter above.
+  # Adds a file with the same hash as the request/response pair, but with a "hunt" extension.
+  hunt:
+    active: true
+    exactMatch: false # exactly match hunt strings (check github.com/ctoyan/ponieproxy/wiki)
+    matchingParams:   # what JSON and query params to check when hunting, mapping them agains a certain vulnerability type
+      idor: ["account", "doc", "edit", "email", "group", "id", "key", "no", "number", "order", "profile", "report", "user"]
+      ssrf: ["callback", "continue", "data", "dest", "dir", "domain", "feed", "host", "html", "navigation", "next", "open", "out", "page", "path", "port", "redirect", "reference", "return", "show", "site", "to", "uri", "url", "val", "validate", "view", "window"]
+      osci: ["cli", "cmd", "daemon", "dir", "download", "execute", "ip", "log", "upload"]
+      sqli: ["column", "delete", "fetch", "field", "filter", "from", "id", "keyword", "name", "number", "order", "params", "process", "query", "report", "results", "role", "row", "search", "sel", "select", "sleep", "sort", "string", "table", "update", "user", "view", "where"]
+      fipt: ["doc", "document", "file", "folder", "path", "pdf", "pg", "php_path", "root", "style", "template"]
+      ssti: ["activity", "content", "id", "name", "preview", "redirect", "template", "view"]
+      logic: ["access", "adm", "admin", "alter", "cfg", "clone", "config", "create", "dbg", "debug", "delete", "disable", "edit", "enable", "exec", "execute", "grant", "load", "make", "modify", "rename", "reset", "root", "shell", "test", "toggle"]
+      rce: ["cmd", "exec", "command", "execute", "ping", "query", "jump", "code", "reg", "do", "func", "arg", "option", "load", "process", "step", "read", "function", "req", "feature", "exe", "module", "payload", "run", "print"]
+
+  # Writes matched URLs to the outputFile
+  urls:
+    active: true
+    outputFile: "./urls.txt"
+    config:
+      excludeReqFileTypes: [".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"]
+      excludeRespFileTypes: [".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"]
+      excludeRespContentTypes: ["image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"]
+      excludeReqContentTypes: ["image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"]
+      includeRespContentTypes: ["x-www-form-urlencoded", "json"]
+
+  # Writes matched secrets to the outputFile
+  secrets:
+    active: true
+    outputDir: "./secrets"
+
+  # Writes matched js files to the outputDir
+  js:
+    active: true
+    outputDir: "./js"
+    config:
+      includeRespContentTypes: ["javascript", "jscript", "ecmascript"]

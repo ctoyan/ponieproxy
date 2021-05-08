@@ -2,7 +2,6 @@ package filters
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"regexp"
@@ -20,20 +19,23 @@ import (
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func WriteReq(f *config.Flags) RequestFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
-	}
+func WriteReq(y *config.YAML) RequestFilter {
+	// if !y.Filters.WriteFiles.Active {
+	// 	return RequestFilter{}
+	// }
 
 	return RequestFilter{
 		Conditions: []goproxy.ReqCondition{
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
-			reqFileType(true, ".png", ".jpg", ".jpeg", ".woff", ".css", ".gif", ".js", ".ico"),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			reqFileType(true, y.Filters.Write.Config.ExcludeReqFileTypes...),
+			reqFileType(false, y.Filters.Write.Config.IncludeReqFileTypes...),
+			reqContentType(true, y.Filters.Write.Config.ExcludeReqContentTypes...),
+			reqContentType(false, y.Filters.Write.Config.IncludeReqContentTypes...),
 		},
 		Handler: func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, ud.ReqDump, "req")
+			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, y.Settings.BaseOutputDir, ud.ReqDump, ".req")
 
 			return req, nil
 		},
@@ -47,16 +49,19 @@ func WriteReq(f *config.Flags) RequestFilter {
  * between braces and concatenates them, making the following regex:
  * (LINE_ONE)|(LINE_TWO)|(LINE_THREE), where LINE_N is a single line from your file.
  */
-func WriteResp(f *config.Flags) ResponseFilter {
-	scopeUrls, err := utils.ReadLines(f.ScopeFile)
-	if err != nil {
-		log.Fatalf("error reading lines from file: %v", err)
-	}
+func WriteResp(y *config.YAML) ResponseFilter {
+	// if !y.Filters.WriteFiles.Active {
+	// 	return ResponseFilter{}
+	// }
 
 	return ResponseFilter{
 		Conditions: []goproxy.RespCondition{
-			respContentType(true, "image", "font", "css", "stylesheet", "javascript", "jscript", "ecmascript"),
-			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(scopeUrls, ")|(")))),
+			goproxy.Not(goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.OutScope, ")|("))))),
+			goproxy.UrlMatches(regexp.MustCompile(fmt.Sprintf("(%v)", strings.Join(y.Settings.InScope, ")|(")))),
+			reqFileType(true, y.Filters.Write.Config.ExcludeReqFileTypes...),
+			reqFileType(false, y.Filters.Write.Config.IncludeReqFileTypes...),
+			reqContentType(true, y.Filters.Write.Config.ExcludeReqContentTypes...),
+			reqContentType(false, y.Filters.Write.Config.IncludeReqContentTypes...),
 		},
 		Handler: func(res *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 			responseDump, err := httputil.DumpResponse(res, true)
@@ -65,7 +70,7 @@ func WriteResp(f *config.Flags) ResponseFilter {
 			}
 
 			ud := ctx.UserData.(UserData)
-			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, f.OutputDir, string(responseDump), "res")
+			go utils.WriteUniqueFile(ud.Host, ud.FileChecksum, ud.ReqBody, y.Settings.BaseOutputDir, string(responseDump), ".res")
 
 			return res
 		},

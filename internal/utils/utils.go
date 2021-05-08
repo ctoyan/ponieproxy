@@ -70,8 +70,8 @@ func CollectJsonKeys(json map[string]interface{}, reqJsonKeys map[string]struct{
  * This makes it easy to go through and read them, when opened with "vim *"
  */
 func WriteUniqueFile(host string, checksum string, body string, outputDir string, httpDump string, ext string) {
-	folderPath := fmt.Sprintf("%v/%v", outputDir, host)
-	filePath := fmt.Sprintf("%v/%v.%v", folderPath, checksum, ext)
+	folderPath := filepath.Join(outputDir, host)
+	filePath := filepath.Join(folderPath, checksum+ext)
 
 	if !FileExists(folderPath) {
 		os.MkdirAll(folderPath, os.ModePerm)
@@ -79,11 +79,11 @@ func WriteUniqueFile(host string, checksum string, body string, outputDir string
 
 	if !FileExists(filePath) {
 		var constructed string
-		if ext == "req" {
-			constructed = fmt.Sprintf(`%v %v`, httpDump, body)
+		if ext == ".req" {
+			constructed = fmt.Sprintf("%v %v", httpDump, body)
 		}
-		if ext == "res" || ext == "hunt" {
-			constructed = fmt.Sprintf(`%v`, httpDump)
+		if ext == ".res" || ext == ".hunt" {
+			constructed = fmt.Sprintf("%v", httpDump)
 		}
 
 		err := AppendToFile(constructed, filePath)
@@ -113,7 +113,7 @@ func ReadLines(path string) ([]string, error) {
 }
 
 /*
- * Takes data and writes it to a file
+ * Takes data and appends it to a file
  */
 func AppendToFile(data string, filePath string) error {
 	if filePath != "" {
@@ -180,7 +180,7 @@ func DownloadFromURL(url *url.URL, folder string) error {
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	fileBytes, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -188,7 +188,7 @@ func DownloadFromURL(url *url.URL, folder string) error {
 	// hash the contents of the file and append them with ?
 	// so we can have all version of the files
 	var hashedQuery string
-	bodyChecksum := sha1.Sum(bodyBytes)
+	bodyChecksum := sha1.Sum(fileBytes)
 	hashedQuery = "?" + hex.EncodeToString(bodyChecksum[:])
 
 	fileLocation := fmt.Sprintf("%v%v%v", folder, url.Path, hashedQuery)
@@ -203,6 +203,6 @@ func DownloadFromURL(url *url.URL, folder string) error {
 	}
 	defer out.Close()
 
-	_, err = io.Copy(out, ioutil.NopCloser(bytes.NewBuffer(bodyBytes)))
+	_, err = io.Copy(out, ioutil.NopCloser(bytes.NewBuffer(fileBytes)))
 	return err
 }

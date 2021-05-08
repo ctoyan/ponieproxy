@@ -42,22 +42,8 @@ ponieproxy -o OUTPUT_DIR -u URLS_FILE
 ## Arguments
 ```
 Usage of ponieproxy:
-  -h string
-    	Host and port (default ":8080")
-  -hem
-    	Exact match for hunt params (case insensitive) (default true)
-  -ho
-    	Creates a checksumed file with the .hunt extension (default true)
-  -is string
-    	Path to a file, which contains a list of URL regexes to filter. Requires an existing file (default "./inscope.txt")
-  -o string
-    	Path to a folder, which will contain uniquely named files with requests and responses.Every request and response have the same hash, but different extensions (default "./out")
-  -sj string
-    	Path to a folder, which will contain all unique js files (default "./js")
-  -su string
-    	Path to a file, which will contain all unique, in-scope URLs, that you've requested. (default "./urls.txt")
-  -sw string
-    	URL to slack webhook
+  -c string
+    	Config file path (e.g. ./config.yml) (default "./config.yml")
 ```
 
 ## What's different than Burp or ZAP?
